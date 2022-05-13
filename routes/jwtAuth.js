@@ -5,6 +5,8 @@ const jwtGenerator =  require("../util/jwtGenerator")
 
 const validInfo = require("../middleware/validInfo")
 
+const authorization = require("../middleware/authorization")
+
 console.log(pool)
 
 router.post("/register", validInfo, async(req, res) => {
@@ -53,7 +55,18 @@ router.post("/login", validInfo, async(req, res) => {
         res.json({token})
 
     } catch (error) {
-        
+        console.error(error)
+        res.status(500).send("Server Error")
+    }
+})
+
+router.get("/is-verified", authorization, async(req, res) => {
+    try {
+        res.json(true)
+    } 
+    catch (error) {
+        console.error(error)
+        res.status(500).send("Server Error")
     }
 })
 
