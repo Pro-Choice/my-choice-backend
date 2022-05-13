@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.get("/dashboard", dashboardController .getBlogs);
 
-router.get("/dashboard/:id", dashboardController .getSingleBlog);
+router.get("/dashboard/:id", dashboardController.getSingleBlog);
 
-router.post("/dashboard", dashboardController.create);
+router.post("/dashboard", dashboardController.createComment);
 
 //router.put("/:id", browseController.updateBlog);
 
