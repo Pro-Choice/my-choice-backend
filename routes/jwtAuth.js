@@ -3,10 +3,11 @@ const router = require("express").Router();
 const bcryt = require("bcrypt")
 const jwtGenerator =  require("../util/jwtGenerator")
 
+const validInfo = require("../middleware/validInfo")
 
 console.log(pool)
 
-router.post("/register", async(req, res) => {
+router.post("/register", validInfo, async(req, res) => {
     try {
         const {email, password, username} = req.body; 
 
@@ -32,7 +33,7 @@ router.post("/register", async(req, res) => {
     }
 })
 
-router.post("/login", async(req, res) => {
+router.post("/login", validInfo, async(req, res) => {
     try {
         const {email, password} = req.body; 
 
@@ -48,7 +49,7 @@ router.post("/login", async(req, res) => {
             res.status(401).json("password or email is incorrect")
         }
         const token = jwtGenerator(user.rows[0].id)
-        
+
         res.json({token})
 
     } catch (error) {
