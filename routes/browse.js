@@ -6,7 +6,7 @@ const authorization = require("../middleware/authorization");
 //Get all questions
 router.get("/", authorization, async (req, res) => {
   try {
-    const questions = await pool.query("SELECT * FROM questions");
+    const questions = await pool.query("SELECT * FROM questions ORDER BY id DESC");
     res.json(questions.rows);
   } catch (error) {
     console.error(error);
