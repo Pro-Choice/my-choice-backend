@@ -62,7 +62,8 @@ router.post("/", authorization, async (req, res) => {
 
 router.delete("/questions/:id", async(req, res) => {
   try {
-    const {id} = req.params; 
+    const {id} = req.params;
+    console.log(id)
     const deletedQuestion = await pool.query("DELETE FROM questions WHERE id = $1 RETURNING *", [id])
     res.json(deletedQuestion.rows)
   } catch (error) {
