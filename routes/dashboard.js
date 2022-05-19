@@ -11,7 +11,7 @@ router.get("/", authorization, async (req, res) => {
       [req.user]
     );
     const userQuestions = await pool.query(
-      "SELECT * FROM questions WHERE user_id = $1",
+      "SELECT * FROM questions WHERE user_id = $1 ORDER BY id DESC",
       [req.user]
     );
     const userInfo = {
@@ -45,6 +45,7 @@ router.get("/questions/:id", authorization, async (req, res) => {
 //Post a question
 router.post("/", authorization, async (req, res) => {
   try {
+    console.log(req.body)
     const { question } = req.body;
     const postQuestion = await pool.query(
       "INSERT INTO questions (content, user_id) VALUES ($1, $2) RETURNING *",
@@ -61,7 +62,8 @@ router.post("/", authorization, async (req, res) => {
 
 router.delete("/questions/:id", async(req, res) => {
   try {
-    const {id} = req.params; 
+    const {id} = req.params;
+    console.log(id)
     const deletedQuestion = await pool.query("DELETE FROM questions WHERE id = $1 RETURNING *", [id])
     res.json(deletedQuestion.rows)
   } catch (error) {
@@ -69,5 +71,21 @@ router.delete("/questions/:id", async(req, res) => {
     res.status(500).json("server error")
   }
 })
+
+//Update profile info
+router.put("/", authorization, async (req, res) => {
+  try {
+    console.log(req.body)
+    const { first_name, last_name, bio } = req.body;
+    const updateBio = await pool.query(
+      "UPDATE users SET first_name = $1,  last_name = $2, bio = $3 WHERE id = $4 RETURNING *",
+      [first_name, last_name, bio, req.user]
+    );
+    res.json(updateBio.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("server error");
+  }
+});
 
 module.exports = router;
