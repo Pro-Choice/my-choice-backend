@@ -71,4 +71,20 @@ router.delete("/questions/:id", async(req, res) => {
   }
 })
 
+//Update profile info
+router.put("/", authorization, async (req, res) => {
+  try {
+    console.log(req.body)
+    const { first_name, last_name, bio } = req.body;
+    const updateBio = await pool.query(
+      "UPDATE users SET first_name = $1,  last_name = $2, bio = $3 WHERE id = $4 RETURNING *",
+      [first_name, last_name, bio, req.user]
+    );
+    res.json(updateBio.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("server error");
+  }
+});
+
 module.exports = router;
