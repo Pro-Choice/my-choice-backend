@@ -11,7 +11,7 @@ router.get("/", authorization, async (req, res) => {
       [req.user]
     );
     const userQuestions = await pool.query(
-      "SELECT * FROM questions WHERE user_id = $1",
+      "SELECT * FROM questions WHERE user_id = $1 ORDER BY id DESC",
       [req.user]
     );
     const userInfo = {
@@ -45,6 +45,7 @@ router.get("/questions/:id", authorization, async (req, res) => {
 //Post a question
 router.post("/", authorization, async (req, res) => {
   try {
+    console.log(req.body)
     const { question } = req.body;
     const postQuestion = await pool.query(
       "INSERT INTO questions (content, user_id) VALUES ($1, $2) RETURNING *",
