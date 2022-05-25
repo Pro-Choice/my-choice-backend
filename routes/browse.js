@@ -6,7 +6,7 @@ const authorization = require("../middleware/authorization");
 //Get all questions
 router.get("/", authorization, async (req, res) => {
   try {
-    const questions = await pool.query("SELECT * FROM questions ORDER BY id DESC");
+    const questions = await pool.query("SELECT * FROM questions INNER JOIN users ON questions.user_id = users.user_id ORDER by questions.question_id DESC");
     res.json(questions.rows);
   } catch (error) {
     console.error(error);
@@ -41,8 +41,10 @@ router.post("/questions/:id", authorization, async (req, res) => {
       "INSERT INTO answers (content, question_id, user_id) VALUES($1, $2, $3) RETURNING *",
       [answer, id, user_id],
     );
+
+    const allAnswers = await pool.query("SELECT * FROM answers WHERE question_id = $1", [id])
     
-    res.json(postAnswer.rows);
+    res.json(allAnswers);
   } catch (error) {
     console.error(error);
     res.status(500).json("server error");

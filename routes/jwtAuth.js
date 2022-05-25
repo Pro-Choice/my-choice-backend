@@ -31,7 +31,7 @@ router.post("/register", validInfo, async (req, res) => {
       [email, username, bcrytPassword]
     );
 
-    const token = jwtGenerator(newUser.rows[0].id);
+    const token = jwtGenerator(newUser.rows[0].user_id);
     res.json({ token });
   } catch (err) {
     console.error(err.message);
@@ -56,7 +56,7 @@ router.post("/login", validInfo, async (req, res) => {
     if (!validPassword) {
       res.status(401).json("password or email is incorrect");
     }
-    const token = jwtGenerator(user.rows[0].id);
+    const token = jwtGenerator(user.rows[0].user_id);
 
     res.json({ token });
   } catch (error) {
