@@ -31,6 +31,18 @@ router.get("/questions/:id", authorization, async (req, res) => {
   }
 });
 
+//Get all answers
+
+router.get("/questions", authorization, async (req, res) => {
+  try {
+    const answers = await pool.query("SELECT * FROM answers INNER JOIN users ON answers.user_id = users.user_id ORDER by answers.answer_id ASC")
+    res.json(answers.rows)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json("server error")
+  }
+})
+
 //Answer a question
 router.post("/questions/:id", authorization, async (req, res) => {
   try {
