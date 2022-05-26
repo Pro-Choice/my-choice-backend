@@ -65,6 +65,7 @@ router.delete("/questions/:id", async(req, res) => {
   try {
     const {id} = req.params;
     console.log(id)
+    pool.query("DELETE FROM answers WHERE answers.question_id = $1", [id])
     const deletedQuestion = await pool.query("DELETE FROM questions WHERE question_id = $1 RETURNING *", [id])
     res.json(deletedQuestion.rows)
   } catch (error) {
