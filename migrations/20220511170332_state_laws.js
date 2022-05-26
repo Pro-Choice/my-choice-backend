@@ -4,7 +4,7 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("state_laws", function (table) {
-    table.increments("id").primary();
+    table.increments("state_law_id").primary();
     table.string("state_name", 50);
     table.string("state_law", 255);
   });

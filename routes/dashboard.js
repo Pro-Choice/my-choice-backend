@@ -5,13 +5,14 @@ const authorization = require("../middleware/authorization");
 
 //Get user's information and all of user's questions
 router.get("/", authorization, async (req, res) => {
+  console.log(req.user)
   try {
     const userData = await pool.query(
-      "SELECT username, first_name, last_name, bio FROM users WHERE id = $1",
+      "SELECT username, first_name, last_name, bio FROM users WHERE user_id = $1",
       [req.user]
     );
     const userQuestions = await pool.query(
-      "SELECT * FROM questions WHERE user_id = $1 ORDER BY id DESC",
+      "SELECT * FROM questions JOIN users ON questions.user_id = users.user_id WHERE users.user_id = $1",
       [req.user]
     );
     const userInfo = {
@@ -64,7 +65,8 @@ router.delete("/questions/:id", async(req, res) => {
   try {
     const {id} = req.params;
     console.log(id)
-    const deletedQuestion = await pool.query("DELETE FROM questions WHERE id = $1 RETURNING *", [id])
+    pool.query("DELETE FROM answers WHERE answers.question_id = $1", [id])
+    const deletedQuestion = await pool.query("DELETE FROM questions WHERE question_id = $1 RETURNING *", [id])
     res.json(deletedQuestion.rows)
   } catch (error) {
     console.error(error)
@@ -78,7 +80,7 @@ router.put("/", authorization, async (req, res) => {
     console.log(req.body)
     const { first_name, last_name, bio } = req.body;
     const updateBio = await pool.query(
-      "UPDATE users SET first_name = $1,  last_name = $2, bio = $3 WHERE id = $4 RETURNING *",
+      "UPDATE users SET first_name = $1,  last_name = $2, bio = $3 WHERE user_id = $4 RETURNING *",
       [first_name, last_name, bio, req.user]
     );
     res.json(updateBio.rows[0]);
